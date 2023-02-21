@@ -1,0 +1,117 @@
+<template>
+    <lightning-card title="Search Opportunity Through Filter Based On Stage, Type, Owner" custom-icon="custom:icon13">
+        <h1 class="slds-text-align_right">
+            <span title="Total Amount">Total Amount = {wiredAccounts.data}</span><br>
+            <span title="Total Amount">Total Opportunities:-</span>
+          </h1>
+    <div class="slds slds-p-horizontal--medium">
+    <div class="slds-grid slds-wrap">
+    <div class="slds-col slds-size_1.5-of-12 slds-m-bottom--medium">
+    <lightning-Input type="search" placeholder="Search..." value={OpportunityName} name="OpportunityName" class="OpportunityName" onchange={handleChangeAccName}></lightning-input>
+    </div>
+    <div class="slds-col slds-size_2-of-12 slds-m-top--medium" style="margin-top: 19px; margin-left: 10px;">
+    <lightning-button label="Filter By StageName" size="small" variant="brand" onclick={handleOpportunitySearch} icon-name="utility:search" icon-position="right"></lightning-button>
+    </div>
+    <div class="slds-col slds-size_1.5-of-12 slds-m-bottom--medium" >
+        <lightning-Input type="search" placeholder="Search..." value={OpportunityName} name="OpportunityName" class="OpportunityName" onchange={handleChangeAccName1}></lightning-input>
+        </div>
+        <div class="slds-col slds-size_1.8-of-12 slds-m-top--medium" style="margin-top: 19px; margin-left: 10px;">
+        <lightning-button label=" Filter By Type" size="small" variant="brand" onclick={handleOpportunitySearch1} icon-name="utility:search" icon-position="right"></lightning-button>
+        </div>
+        <div class="slds-col slds-size_1.5-of-12 slds-m-bottom--medium">
+            <lightning-Input type="search" placeholder="Search..." value={OpportunityName} name="OpportunityName" class="OpportunityName" onchange={handleChangeAccName2}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_2-of-12 slds-m-top--medium" style="margin-top: 19px; margin-left: 10px;">
+            <lightning-button label="Filter By Owner" size="small" variant="brand" onclick={handleOpportunitySearch2} icon-name="utility:search" icon-position="right"></lightning-button>
+            </div>
+    </div>
+    
+    <h3><strong><span style="color:brown;">{dataNotFound}</span></strong></h3><br/>
+    <h2 class="slds-m-bottom--x-small" style="color:darkslateblue; font-weight:bold;">Displaying Opportunity Based On Filter </h2>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered" border="1" cellspacing="0" cellpadding="0"  style="border-collapse:collapse;">
+    <thead>
+    <tr>
+    <th>Opportunity Name</th>
+    <th>Stage Name</th>
+    <th>Type</th>
+    <th>Close Date</th>
+    <th>Owner Name</th>
+    <th>Amount</th>
+    <th>Edit</th>
+    </tr>
+    </thead>
+    <tbody>
+    <template for:each={records} for:item="oppItem">
+    <tr key={oppItem.Id}>
+    <td>{oppItem.Name}</td>
+    <td>{oppItem.StageName}</td>
+    <td>{oppItem.Type}</td>
+    <td>{oppItem.CloseDate}</td>
+    <td>{oppItem.Owner.Name}</td>
+    <td>{oppItem.Amount}</td>
+    <td><lightning-button-icon 
+        icon-name="utility:edit"   
+        alternative-text="Edit Opportunity" 
+        class="slds-m-left_xx-small" 
+        title="Edit Opportunity"
+        onclick={openModal}
+        value={oppItem}>
+
+    </lightning-button-icon></td>
+        
+    </tr>
+    
+    </template>
+    </tbody>
+    </table>
+    </div>
+    <br/><br/>
+    </lightning-card>
+<!--Pop up code-->
+        <template if:true={showModal}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close"
+                                alternative-text="close"
+                                variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>    
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit {recName}</h2>
+                    </header>
+
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">                       
+
+                         <!--<p>Record Id : {recId}</p>-->
+                         <div class="slds-p-bottom_large slds-p-left_large" style="width:500px">
+                            <lightning-record-edit-form
+                                id="recordViewForm"
+                                record-id={recId}
+                                object-api-name="Opportunity"
+                                onsubmit={handleSubmit}
+                                onsuccess={myMethod}>
+
+                                <lightning-messages></lightning-messages>
+                                <lightning-input-field field-name="Name"></lightning-input-field>
+                                <lightning-input-field field-name="OwnerId"></lightning-input-field>
+                                <lightning-input-field field-name="OpportunityId"></lightning-input-field>
+                                <lightning-input-field field-name="Type"></lightning-input-field>
+                                <lightning-input-field field-name="Amount"></lightning-input-field>
+                                <lightning-input-field field-name="CloseDate"></lightning-input-field>
+                                <lightning-input-field field-name="StageName"></lightning-input-field>
+                                <!--<input type="submit" class="hidden" />-->
+                                <lightning-button class="slds-m-top_medium" type="submit" variant="brand" label="Update"></lightning-button>
+                            </lightning-record-edit-form>
+                         </div>
+                    </div>
+
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
+                    </footer>
+
+                </div>
+            </section>
+        </template>
+    </template>
